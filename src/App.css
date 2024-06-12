@@ -5,16 +5,28 @@
   text-align: start;
 }
 
-.navbtn {
+.btn-nav {
   border-top: 1px solid #bebebe;
+  border-bottom: 1px solid transparent;
   border-left: 1px solid #bebebe;
   border-right: 1px solid #bebebe;
   border-radius: 5px 5px 0 0;
   background-color: #6c747d;
   color: #fff;
+  padding: 0.6em 1.2em;
+  margin-bottom: 0;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-.navbtn:focus {
+.btn-nav:focus {
   background-color: #fff;
   color: #6c747d;
 }
+
+.btn-home:focus {
+  background-color: #c8cfc7;
+}
+
+
