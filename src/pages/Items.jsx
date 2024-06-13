@@ -18,7 +18,7 @@ const Items = () => {
 
   return (
     <div className="container">
-      <AddButton />
+      <AddButton name="Add item" to="/add-item" />
       <div className="py-3">
         <table className="table border shadow caption-top table-hover">
           <caption>List of items</caption>
