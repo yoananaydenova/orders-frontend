@@ -1,8 +1,8 @@
 import React from "react";
 
-const DeleteButton = () => {
+const DeleteButton = ({ deleteHandler }) => {
   return (
-    <button className="btn btn-danger mx-2">
+    <button className="btn btn-danger mx-2" onClick={deleteHandler}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"

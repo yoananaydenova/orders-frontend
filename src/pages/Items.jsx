@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import EditButton from "../components/buttons/EditButton";
 import ViewButton from "../components/buttons/ViewButton";
@@ -7,6 +8,9 @@ import AddButton from "../components/buttons/AddButton";
 
 const Items = () => {
   const [items, setItems] = useState([]);
+
+  const { id } = useParams();
+
   useEffect(() => {
     loadItems();
   }, []);
@@ -14,6 +18,11 @@ const Items = () => {
   const loadItems = async () => {
     const result = await axios.get("http://localhost:8080/items");
     setItems(result.data);
+  };
+
+  const deleteItem = async (id) => {
+    await axios.delete(`http://localhost:8080/item/${id}`);
+    loadItems();
   };
 
   return (
@@ -42,8 +51,8 @@ const Items = () => {
                 <td>{item.currentPrice}</td>
                 <td className="btn-group-sm">
                   <ViewButton />
-                  <EditButton to={`/edit-item/${item.itemId}`}/>
-                  <DeleteButton />
+                  <EditButton to={`/edit-item/${item.itemId}`} />
+                  <DeleteButton deleteHandler={()=>deleteItem(item.itemId)} />
                 </td>
               </tr>
             ))}
