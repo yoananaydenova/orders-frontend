@@ -17,7 +17,7 @@ function App() {
         <Route element={<Home />} path="/" />
         <Route element={<Items />} path="/items" />
         <Route element={<AddItem />} path="/add-item" />
-        <Route element={<EditItem />} path="/edit-item" />
+        <Route element={<EditItem />} path="/edit-item/:id" />
 
         <Route element={<Orders />} path="/orders" />
         <Route element={<AddOrder />} path="/add-order" />

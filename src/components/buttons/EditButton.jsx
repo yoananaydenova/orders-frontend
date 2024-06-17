@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-function EditButton() {
+function EditButton({to}) {
   return (
-    <button className="btn btn-primary mx-2">
+    <Link to={to} className="btn btn-primary mx-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -18,7 +19,7 @@ function EditButton() {
         />
       </svg>
       <span>Edit</span>
-    </button>
+    </Link>
   );
 }
 

@@ -42,7 +42,7 @@ const Items = () => {
                 <td>{item.currentPrice}</td>
                 <td className="btn-group-sm">
                   <ViewButton />
-                  <EditButton />
+                  <EditButton to={`/edit-item/${item.itemId}`}/>
                   <DeleteButton />
                 </td>
               </tr>
