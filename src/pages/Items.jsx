@@ -50,7 +50,7 @@ const Items = () => {
                 <td>{item.availableQuantity}</td>
                 <td>{item.currentPrice}</td>
                 <td className="btn-group-sm">
-                  <ViewButton />
+                  <ViewButton to={`/view-item/${item.itemId}`}/>
                   <EditButton to={`/edit-item/${item.itemId}`} />
                   <DeleteButton deleteHandler={()=>deleteItem(item.itemId)} />
                 </td>
