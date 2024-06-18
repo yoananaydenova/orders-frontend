@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import EditButton from "../components/buttons/EditButton";
 import ViewButton from "../components/buttons/ViewButton";
@@ -6,7 +7,11 @@ import DeleteButton from "../components/buttons/DeleteButton";
 import AddButton from "../components/buttons/AddButton";
 
 const Orders = () => {
+
   const [orders, setOrders] = useState([]);
+  
+  const { id } = useParams();
+  
   useEffect(() => {
     loadOrders();
   }, []);
@@ -14,6 +19,11 @@ const Orders = () => {
   const loadOrders = async () => {
     const result = await axios.get("http://localhost:8080/orders");
     setOrders(result.data);
+  };
+
+  const deleteOrder = async (id) => {
+    await axios.delete(`http://localhost:8080/order/${id}`);
+    loadOrders();
   };
 
   return (
@@ -41,9 +51,9 @@ const Orders = () => {
                 <td>{order.updatedOn}</td>
                 <td>{order.totalAmount}</td>
                 <td className="btn-group-sm">
-                  <ViewButton />
-                  <EditButton />
-                  <DeleteButton />
+                  <ViewButton to={`/view-order/${order.orderId}`}/>
+                  <EditButton to={`/edit-order/${order.orderId}`}/>
+                  <DeleteButton deleteHandler={()=>deleteOrder(order.orderId)} />
                 </td>
               </tr>
             ))}
