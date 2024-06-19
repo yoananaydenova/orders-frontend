@@ -59,7 +59,7 @@ const ViewOrder = () => {
                       </div>
                       <div>
                         <b>Item price:</b>
-                        <span className="mx-2"> todo</span>
+                        <span className="mx-2">{item.price}</span>
                       </div>
                       <div>
                         <b>Item quantity:</b>
