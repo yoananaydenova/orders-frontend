@@ -19,8 +19,6 @@ const ViewItem = () => {
   const loadItem = async () => {
     const result = await axios.get(`http://localhost:8080/item/${id}`);
     setItem(result.data);
-
-    console.log(result.data);
   };
 
   return (
@@ -31,7 +29,7 @@ const ViewItem = () => {
 
           <div className="card">
             <div className="card-header">
-             <h5>Details of item id: {item.itemId} </h5>
+              <h5>Details of item id: {item.itemId} </h5>
               <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                   <b>Name:</b>

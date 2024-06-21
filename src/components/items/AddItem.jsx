@@ -28,7 +28,7 @@ const AddItem = () => {
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-          <h2 className="text-center m-4">Create item</h2>
+          <h2 className="text-center m-4">Create Item</h2>
           <form onSubmit={onSubmitHandler}>
             <div className="mb-3">
               <label className="form-label w-100">
