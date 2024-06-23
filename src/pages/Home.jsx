@@ -1,5 +1,6 @@
 import React from "react";
 import image from "../assets/bg-desk.jpg";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -12,14 +13,22 @@ const Home = () => {
 
       <div className="card position-absolute top-0 start-50 translate-middle-x mt-5">
         <div className="card-body">
-          <h5 className="card-title">Card title</h5>
+          <h5 className="card-title">What you can do here?</h5>
           <p className="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            <ul>
+              <li>
+                In the Items page, we can add items, view already created ones,
+                or delete them.
+              </li>
+              <li>
+                In the Orders page, we can create orders with already created
+                items, view existing orders and delete them.
+              </li>
+            </ul>
           </p>
-          <a href="#" className="btn btn-primary">
-            Go somewhere
-          </a>
+          <Link to="/add-item" className="btn btn-primary">
+            Start creating items
+          </Link>
         </div>
       </div>
     </div>
