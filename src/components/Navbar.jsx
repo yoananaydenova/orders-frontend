@@ -2,6 +2,14 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
+  const activeLink = {
+    color: "#6c747d",
+    background: "#fff",
+  };
+  const normalLink = {
+    color: "#fff",
+    background: "#6c747d",
+  };
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-secondary pb-0 px-5">
@@ -9,13 +17,25 @@ const Navbar = () => {
           Fullstack Orders App
         </NavLink>
         <div className="d-inline-flex gap-3">
-          <NavLink to="/" className="btn-nav btn-home">
+          <NavLink
+            to="/"
+            style={({ isActive }) => (isActive ? activeLink : normalLink)}
+            className="btn-nav btn-home"
+          >
             Home
           </NavLink>
-          <NavLink to="/items" className="btn-nav">
+          <NavLink
+            to="/items"
+            style={({ isActive }) => (isActive ? activeLink : normalLink)}
+            className="btn-nav"
+          >
             Items
           </NavLink>
-          <NavLink to="/orders" className="btn-nav">
+          <NavLink
+            to="/orders"
+            style={({ isActive }) => (isActive ? activeLink : normalLink)}
+            className="btn-nav"
+          >
             Orders
           </NavLink>
         </div>
