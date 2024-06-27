@@ -13,7 +13,7 @@ const EditItem = () => {
     currentPrice: "",
   });
 
-  const { name, availableQuantity, currentPrice } = item;
+  const { itemName, quantity, price } = item;
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -45,10 +45,10 @@ const EditItem = () => {
               <label className="form-label w-100">
                 Item name
                 <input
-                  value={name}
+                  value={itemName}
                   onChange={onChangeHandler}
                   type="text"
-                  name="name"
+                  name="itemName"
                   className="form-control"
                 />
               </label>
@@ -57,10 +57,10 @@ const EditItem = () => {
               <label className="form-label w-100">
                 Quantity
                 <input
-                  value={availableQuantity}
+                  value={quantity}
                   onChange={onChangeHandler}
                   type="text"
-                  name="availableQuantity"
+                  name="quantity"
                   className="form-control"
                 />
               </label>
@@ -69,10 +69,10 @@ const EditItem = () => {
               <label className="form-label w-100">
                 Price
                 <input
-                  value={currentPrice}
+                  value={price}
                   onChange={onChangeHandler}
                   type="text"
-                  name="currentPrice"
+                  name="price"
                   className="form-control"
                 />
               </label>

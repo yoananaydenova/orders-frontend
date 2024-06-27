@@ -55,7 +55,7 @@ const ViewOrder = () => {
                     <li className="list-group-item">
                       <div>
                         <b>Item name:</b>
-                        <span className="mx-2"> {item.itemName}</span>
+                        <span className="mx-2"> {item.name}</span>
                       </div>
                       <div>
                         <b>Item price:</b>

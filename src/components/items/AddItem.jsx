@@ -7,11 +7,11 @@ const AddItem = () => {
 
   const [item, setItem] = useState({
     name: "",
-    availableQuantity: "",
-    currentPrice: "",
+    quantity: "",
+    price: "",
   });
 
-  const { name, availableQuantity, currentPrice } = item;
+  const { name, quantity, price } = item;
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -46,10 +46,10 @@ const AddItem = () => {
               <label className="form-label w-100">
                 Quantity
                 <input
-                  value={availableQuantity}
+                  value={quantity}
                   onChange={onChangeHandler}
                   type="text"
-                  name="availableQuantity"
+                  name="quantity"
                   className="form-control"
                 />
               </label>
@@ -58,10 +58,10 @@ const AddItem = () => {
               <label className="form-label w-100">
                 Price
                 <input
-                  value={currentPrice}
+                  value={price}
                   onChange={onChangeHandler}
                   type="text"
-                  name="currentPrice"
+                  name="price"
                   className="form-control"
                 />
               </label>

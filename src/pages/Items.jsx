@@ -44,15 +44,15 @@ const Items = () => {
           </thead>
           <tbody className="table-group-divider align-middle">
             {items.map((item, index) => (
-              <tr key={item.itemId}>
-                <th scope="row">{item.itemId}</th>
+              <tr key={item.id}>
+                <th scope="row">{item.id}</th>
                 <td>{item.name}</td>
-                <td>{item.availableQuantity}</td>
-                <td>{item.currentPrice}</td>
+                <td>{item.quantity}</td>
+                <td>{item.price}</td>
                 <td className="btn-group-sm">
-                  <ViewButton to={`/view-item/${item.itemId}`}/>
-                  <EditButton to={`/edit-item/${item.itemId}`} />
-                  <DeleteButton deleteHandler={()=>deleteItem(item.itemId)} />
+                  <ViewButton to={`/view-item/${item.id}`} />
+                  <EditButton to={`/edit-item/${item.id}`} />
+                  <DeleteButton deleteHandler={() => deleteItem(item.id)} />
                 </td>
               </tr>
             ))}

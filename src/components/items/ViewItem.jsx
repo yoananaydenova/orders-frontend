@@ -4,10 +4,10 @@ import axios from "axios";
 
 const ViewItem = () => {
   const [item, setItem] = useState({
-    itemId: "",
+    id: "",
     name: "",
-    availableQuantity: "",
-    currentPrice: "",
+    quantity: "",
+    price: "",
   });
 
   const { id } = useParams();
@@ -29,7 +29,7 @@ const ViewItem = () => {
 
           <div className="card">
             <div className="card-header">
-              <h5>Details of item id: {item.itemId} </h5>
+              <h5>Details of item id: {item.id} </h5>
               <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                   <b>Name:</b>
@@ -38,12 +38,12 @@ const ViewItem = () => {
 
                 <li className="list-group-item">
                   <b>Quantity:</b>
-                  <span className="mx-2">{item.availableQuantity}</span>
+                  <span className="mx-2">{item.quantity}</span>
                 </li>
 
                 <li className="list-group-item">
                   <b>Price:</b>
-                  <span className="mx-2">{item.currentPrice}</span>
+                  <span className="mx-2">{item.price}</span>
                 </li>
               </ul>
             </div>
