@@ -1,38 +1,62 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ItemTable from "../items/ItemTable";
 
 const AddOrder = () => {
   const navigate = useNavigate();
 
   const [requestItems, setRequestItems] = useState([]);
+
+  const [order, setOrder] = useState({ items: [] });
+
+  const [options, setOptions] = useState([]);
+
+  const [optionsState, setOptionsState] = useState("-1");
+
+  const defaultItem = {
+    id: "-1",
+    name: "",
+    quantity: 0,
+    price: "",
+  };
+
+  const [selectedItem, setSelectedItem] = useState(defaultItem);
+
   useEffect(() => {
     loadItems();
   }, []);
 
   const loadItems = async () => {
     const result = await axios.get("http://localhost:8080/items");
-    setRequestItems(result.data);
+    console.log("result", result);
+    const requestedItems = [...result.data];
+    setRequestItems(requestedItems);
+
+    const resultOtionItems = result.data.map((item) => ({
+      name: item.name,
+      id: item.id,
+    }));
+
+    // setOptions((prevState) => [...prevState, ...resultOtionItems]);
+    setOptions(resultOtionItems);
+
+    // console.log("+resultOtionItems " + JSON.stringify(resultOtionItems));
+    // console.log("---options" + JSON.stringify(options));
   };
 
-  const [order, setOrder] = useState({ items: [] });
-
-  const [selectedItem, setSelectedItem] = useState({
-    itemId: "",
-    name: "",
-    availableQuantity: "",
-    currentPrice: "",
-  });
-
   const onChangeQuantityHandler = (e) => {
-    const { name, value } = e.target;
+    const name = e.target.name;
+    const value = e.target.value ? Number(e.target.value) : "";
     setSelectedItem((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const createOrderHandler = async (e) => {
     e.preventDefault();
 
-    console.log("order " + JSON.stringify(order));
+    // console.log("---options" + JSON.stringify(options));
+    // console.log("order " + JSON.stringify(order));
+
     await axios.post("http://localhost:8080/order", order);
     navigate("/orders");
   };
@@ -41,31 +65,56 @@ const AddOrder = () => {
     let currentItem;
 
     if (e.target.value === "-1") {
-      currentItem = {
-        itemId: "",
-        name: "",
-        availableQuantity: "",
-        currentPrice: "",
-      };
+      currentItem = defaultItem;
     } else {
-      currentItem = requestItems.find((i) => i.itemId == e.target.value);
+      currentItem = requestItems.find((i) => i.id == e.target.value);
     }
 
+    setOptionsState(e.target.value);
     setSelectedItem(currentItem);
   };
 
   const addItemHandler = () => {
-    const newItem = {
-      itemId: selectedItem.itemId,
-      itemName: selectedItem.name,
-      quantity: selectedItem.availableQuantity,
-      currentPrice: selectedItem.currentPrice,
-    };
+    if (selectedItem.id === "-1") {
+      return;
+    }
 
-    setOrder((prevState) => ({
-      items: [...prevState.items, newItem],
-    }));
+    const orderItems = order.items;
+    const currentItem = orderItems.find((item) => item.id === selectedItem.id);
+    if (currentItem) {
+      currentItem.quantity += selectedItem.quantity;
+    } else {
+      orderItems.push(selectedItem);
+    }
+    setOrder({ items: orderItems });
+    
+    // setOrder((prevState) => ({
+    //   items: items.map((item) =>
+    //     item.id === selectedItem.id
+    //       ? { ...item, quantity: selectedItem.quantity }
+    //       : selectedItem
+    //   ),
+    // }));
 
+    // const addedItem = order.items.find((item) => item.id === selectedItem.id);
+
+    // if (addedItem === undefined) {
+    //   setOrder((prevState) => ({
+    //     items: [...prevState.items, selectedItem],
+    //   }));
+    // } else {
+    //   // TODO change item
+    //   setOrder((prevState) => ({
+    //     items: [...prevState.items, selectedItem],
+    //   }));
+    // }
+
+    // setOrder((prevState) => ({
+    //   items: [...prevState.items, selectedItem],
+    // }));
+
+    setOptionsState("-1");
+    setSelectedItem(defaultItem);
   };
 
   return (
@@ -79,13 +128,15 @@ const AddOrder = () => {
 
               <select
                 onChange={handleSelectChange}
+                value={optionsState}
                 className="form-select"
-                aria-label="Default select example"
               >
-                <option value="-1">Choose item</option>
-                {requestItems.map((item, index) => (
-                  <option key={item.itemId} value={item.itemId}>
-                    {item.name}
+                <option key="-1" value="-1" disabled>
+                  Choose an option
+                </option>
+                {options.map((option, index) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
                   </option>
                 ))}
               </select>
@@ -95,10 +146,10 @@ const AddOrder = () => {
               <label className="form-label w-100">
                 Price
                 <input
-                  defaultValue={selectedItem.currentPrice}
+                  defaultValue={selectedItem.price}
                   readOnly
                   type="text"
-                  name="currentPrice"
+                  name="price"
                   className="form-control"
                 />
               </label>
@@ -108,10 +159,10 @@ const AddOrder = () => {
               <label className="form-label w-100">
                 Quantity
                 <input
-                  defaultValue={selectedItem.availableQuantity}
+                  value={selectedItem.quantity}
                   onChange={(e) => onChangeQuantityHandler(e)}
-                  type="text"
-                  name="availableQuantity"
+                  type="number"
+                  name="quantity"
                   className="form-control"
                 />
               </label>
@@ -136,40 +187,8 @@ const AddOrder = () => {
               </Link>
             </div>
           </div>
-          <div>
-            {/* TODO add table as component */}
-            <table className="table border shadow caption-top table-hover">
-              <caption>List of items</caption>
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">ITEM NAME</th>
-                  <th scope="col">QUANTITY</th>
-                  <th scope="col">PRICE</th>
-                  <th scope="col" className="col-md-3 offset-md-3">
-                    ACTION
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="table-group-divider align-middle">
-                {order.items.map((item, index) => (
-                  <tr key={item.itemId}>
-                    <th scope="row">{item.itemId}</th>
-                    <td>{item.itemName}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.currentPrice}</td>
-                    <td className="btn-group-sm">
-                      {/* <ViewButton to={`/view-item/${item.itemId}`} />
-                      <EditButton to={`/edit-item/${item.itemId}`} />
-                      <DeleteButton
-                        deleteHandler={() => deleteItem(item.itemId)}
-                      /> */}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+          <ItemTable items={order.items} />
         </div>
       </div>
     </div>
