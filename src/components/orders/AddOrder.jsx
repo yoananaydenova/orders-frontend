@@ -29,9 +29,8 @@ const AddOrder = () => {
 
   const loadItems = async () => {
     const result = await axios.get("http://localhost:8080/items");
-    console.log("result", result);
-    const requestedItems = [...result.data];
-    setRequestItems(requestedItems);
+
+    setRequestItems([...result.data]);
 
     const resultOtionItems = result.data.map((item) => ({
       name: item.name,
@@ -53,10 +52,6 @@ const AddOrder = () => {
 
   const createOrderHandler = async (e) => {
     e.preventDefault();
-
-    // console.log("---options" + JSON.stringify(options));
-    // console.log("order " + JSON.stringify(order));
-
     await axios.post("http://localhost:8080/order", order);
     navigate("/orders");
   };
@@ -69,6 +64,7 @@ const AddOrder = () => {
     } else {
       currentItem = requestItems.find((i) => i.id == e.target.value);
     }
+    console.log("first", currentItem);
 
     setOptionsState(e.target.value);
     setSelectedItem(currentItem);
@@ -84,34 +80,9 @@ const AddOrder = () => {
     if (currentItem) {
       currentItem.quantity += selectedItem.quantity;
     } else {
-      orderItems.push(selectedItem);
+      orderItems.push({...selectedItem});
     }
     setOrder({ items: orderItems });
-    
-    // setOrder((prevState) => ({
-    //   items: items.map((item) =>
-    //     item.id === selectedItem.id
-    //       ? { ...item, quantity: selectedItem.quantity }
-    //       : selectedItem
-    //   ),
-    // }));
-
-    // const addedItem = order.items.find((item) => item.id === selectedItem.id);
-
-    // if (addedItem === undefined) {
-    //   setOrder((prevState) => ({
-    //     items: [...prevState.items, selectedItem],
-    //   }));
-    // } else {
-    //   // TODO change item
-    //   setOrder((prevState) => ({
-    //     items: [...prevState.items, selectedItem],
-    //   }));
-    // }
-
-    // setOrder((prevState) => ({
-    //   items: [...prevState.items, selectedItem],
-    // }));
 
     setOptionsState("-1");
     setSelectedItem(defaultItem);
