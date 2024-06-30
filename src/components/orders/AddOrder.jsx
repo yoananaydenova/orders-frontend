@@ -64,7 +64,6 @@ const AddOrder = () => {
     } else {
       currentItem = requestItems.find((i) => i.id == e.target.value);
     }
-    console.log("first", currentItem);
 
     setOptionsState(e.target.value);
     setSelectedItem(currentItem);
@@ -75,13 +74,27 @@ const AddOrder = () => {
       return;
     }
 
+    const currentRequestedItem = requestItems.find(
+      (item) => item.id === selectedItem.id
+    );
+
+    if (
+      selectedItem.quantity < 1 ||
+      selectedItem.quantity > currentRequestedItem.quantity
+    ) {
+      return;
+    }
+
     const orderItems = order.items;
     const currentItem = orderItems.find((item) => item.id === selectedItem.id);
     if (currentItem) {
       currentItem.quantity += selectedItem.quantity;
     } else {
-      orderItems.push({...selectedItem});
+      orderItems.push({ ...selectedItem });
     }
+
+    currentRequestedItem.quantity -= selectedItem.quantity;
+
     setOrder({ items: orderItems });
 
     setOptionsState("-1");
@@ -132,6 +145,7 @@ const AddOrder = () => {
                 <input
                   value={selectedItem.quantity}
                   onChange={(e) => onChangeQuantityHandler(e)}
+                  readOnly={selectedItem.quantity === 0}
                   type="number"
                   name="quantity"
                   className="form-control"
@@ -141,6 +155,7 @@ const AddOrder = () => {
 
             <div className="d-flex justify-content-evenly mt-5 mb-4">
               <button
+                disabled={selectedItem.quantity === 0}
                 onClick={addItemHandler}
                 className="btn btn-outline-success"
               >
