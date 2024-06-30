@@ -28,4 +28,7 @@
   background-color: #c8cfc7;
 }
 
-
+.custom-error-form-validation {
+  border: 1px solid red;
+  box-shadow: 0 0 0 0.25rem rgb(253 13 59 / 25%) !important;
+}

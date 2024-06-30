@@ -23,6 +23,8 @@ const AddOrder = () => {
 
   const [selectedItem, setSelectedItem] = useState(defaultItem);
 
+  const [isValidQuantity, setIsValidQuantity] = useState(true);
+
   useEffect(() => {
     loadItems();
   }, []);
@@ -37,16 +39,18 @@ const AddOrder = () => {
       id: item.id,
     }));
 
-    // setOptions((prevState) => [...prevState, ...resultOtionItems]);
     setOptions(resultOtionItems);
-
-    // console.log("+resultOtionItems " + JSON.stringify(resultOtionItems));
-    // console.log("---options" + JSON.stringify(options));
   };
 
   const onChangeQuantityHandler = (e) => {
     const name = e.target.name;
     const value = e.target.value ? Number(e.target.value) : "";
+    const currentRequestedItem = requestItems.find(
+      (item) => item.id === selectedItem.id
+    );
+    console.log("currentRequestedItem", currentRequestedItem);
+    setIsValidQuantity(value >= 1 && value <= currentRequestedItem.quantity);
+
     setSelectedItem((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -65,6 +69,8 @@ const AddOrder = () => {
       currentItem = requestItems.find((i) => i.id == e.target.value);
     }
 
+    setIsValidQuantity(currentItem.quantity > 0);
+
     setOptionsState(e.target.value);
     setSelectedItem(currentItem);
   };
@@ -74,14 +80,7 @@ const AddOrder = () => {
       return;
     }
 
-    const currentRequestedItem = requestItems.find(
-      (item) => item.id === selectedItem.id
-    );
-
-    if (
-      selectedItem.quantity < 1 ||
-      selectedItem.quantity > currentRequestedItem.quantity
-    ) {
+    if (!isValidQuantity) {
       return;
     }
 
@@ -92,7 +91,9 @@ const AddOrder = () => {
     } else {
       orderItems.push({ ...selectedItem });
     }
-
+    const currentRequestedItem = requestItems.find(
+      (item) => item.id === selectedItem.id
+    );
     currentRequestedItem.quantity -= selectedItem.quantity;
 
     setOrder({ items: orderItems });
@@ -145,17 +146,20 @@ const AddOrder = () => {
                 <input
                   value={selectedItem.quantity}
                   onChange={(e) => onChangeQuantityHandler(e)}
-                  readOnly={selectedItem.quantity === 0}
                   type="number"
                   name="quantity"
-                  className="form-control"
+                  className={
+                    isValidQuantity
+                      ? "form-control"
+                      : "form-control custom-error-form-validation"
+                  }
                 />
               </label>
             </div>
 
             <div className="d-flex justify-content-evenly mt-5 mb-4">
               <button
-                disabled={selectedItem.quantity === 0}
+                disabled={selectedItem.quantity === 0 || !isValidQuantity}
                 onClick={addItemHandler}
                 className="btn btn-outline-success"
               >
