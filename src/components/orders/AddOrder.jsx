@@ -102,6 +102,18 @@ const AddOrder = () => {
     setSelectedItem(defaultItem);
   };
 
+  const deleteItemHandler = (id) => {
+    const orderItems = order.items;
+    const currentItem = orderItems.find((item) => item.id === id);
+
+    const currentRequestedItem = requestItems.find((item) => item.id === id);
+    currentRequestedItem.quantity += currentItem.quantity;
+
+    orderItems.splice(currentItem, 1);
+    console.log(orderItems);
+    setOrder({ items: orderItems });
+  };
+
   return (
     <div className="container mt-5">
       <div className="row">
@@ -178,7 +190,10 @@ const AddOrder = () => {
             </div>
           </div>
 
-          <ItemTable items={order.items} />
+          <ItemTable
+            items={order.items}
+            deleteItemHandler={deleteItemHandler}
+          />
         </div>
       </div>
     </div>
