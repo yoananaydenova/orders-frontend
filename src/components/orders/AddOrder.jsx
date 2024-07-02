@@ -19,11 +19,13 @@ const AddOrder = () => {
     name: "",
     quantity: 0,
     price: "",
+    isEditable: false,
+    isValidQuantity: true,
   };
 
   const [selectedItem, setSelectedItem] = useState(defaultItem);
 
-  const [isValidQuantity, setIsValidQuantity] = useState(true);
+  const [isCurrentValidQuantity, setIsCurrentValidQuantity] = useState(true);
 
   useEffect(() => {
     loadItems();
@@ -43,15 +45,47 @@ const AddOrder = () => {
   };
 
   const onChangeQuantityHandler = (e) => {
-    const name = e.target.name;
     const value = e.target.value ? Number(e.target.value) : "";
-    const currentRequestedItem = requestItems.find(
-      (item) => item.id === selectedItem.id
-    );
-    console.log("currentRequestedItem", currentRequestedItem);
-    setIsValidQuantity(value >= 1 && value <= currentRequestedItem.quantity);
+    const itemId = Number(e.target.id);
 
-    setSelectedItem((prevState) => ({ ...prevState, [name]: value }));
+    const currentRequestedItem = requestItems.find(
+      (item) => item.id === itemId
+    );
+
+    setIsCurrentValidQuantity(
+      value >= 1 && value <= currentRequestedItem.quantity
+    );
+    setSelectedItem((prevState) => ({ ...prevState, [e.target.name]: value }));
+  };
+
+  const changeEditState = (id) => {
+
+    const orderItems = order.items;
+    const currentOrderItem = orderItems.find((item) => item.id === id);
+    currentOrderItem.isEditable = !currentOrderItem.isEditable;
+
+    setOrder({ items: orderItems });
+  };
+
+  const onChangeItemQuantityHandler = (e) => {
+    const value = e.target.value ? Number(e.target.value) : "";
+    const itemId = Number(e.target.id);
+
+    const currentRequestedItem = requestItems.find(
+      (item) => item.id === itemId
+    );
+
+    const orderItems = order.items;
+    const currentOrderItem = orderItems.find((item) => item.id === itemId);
+
+    currentRequestedItem.quantity += currentOrderItem.quantity;
+    currentOrderItem.isValidQuantity =
+      value >= 1 && value <= currentRequestedItem.quantity;
+    currentRequestedItem.quantity -= value;
+
+    currentOrderItem.quantity = value;
+
+    setOrder({ items: orderItems });
   };
 
   const createOrderHandler = async (e) => {
@@ -68,8 +102,10 @@ const AddOrder = () => {
     } else {
       currentItem = requestItems.find((i) => i.id == e.target.value);
     }
+    currentItem.isEditable = false;
+    currentItem.isValidQuantity = currentItem.quantity > 0;
 
-    setIsValidQuantity(currentItem.quantity > 0);
+    setIsCurrentValidQuantity(currentItem.quantity > 0);
 
     setOptionsState(e.target.value);
     setSelectedItem(currentItem);
@@ -80,7 +116,7 @@ const AddOrder = () => {
       return;
     }
 
-    if (!isValidQuantity) {
+    if (!isCurrentValidQuantity) {
       return;
     }
 
@@ -110,7 +146,7 @@ const AddOrder = () => {
     currentRequestedItem.quantity += currentItem.quantity;
 
     orderItems.splice(currentItem, 1);
-    console.log(orderItems);
+
     setOrder({ items: orderItems });
   };
 
@@ -156,12 +192,14 @@ const AddOrder = () => {
               <label className="form-label w-100">
                 Quantity
                 <input
+                  id={selectedItem.id}
                   value={selectedItem.quantity}
                   onChange={(e) => onChangeQuantityHandler(e)}
+                  readOnly={selectedItem.id === "-1"}
                   type="number"
                   name="quantity"
                   className={
-                    isValidQuantity
+                    isCurrentValidQuantity
                       ? "form-control"
                       : "form-control custom-error-form-validation"
                   }
@@ -171,7 +209,9 @@ const AddOrder = () => {
 
             <div className="d-flex justify-content-evenly mt-5 mb-4">
               <button
-                disabled={selectedItem.quantity === 0 || !isValidQuantity}
+                disabled={
+                  selectedItem.quantity === 0 || !isCurrentValidQuantity
+                }
                 onClick={addItemHandler}
                 className="btn btn-outline-success"
               >
@@ -192,6 +232,8 @@ const AddOrder = () => {
 
           <ItemTable
             items={order.items}
+            changeEditState={changeEditState}
+            onChangeItemQuantityHandler={onChangeItemQuantityHandler}
             deleteItemHandler={deleteItemHandler}
           />
         </div>
