@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 
-const ItemTable = ({ items }) => {
+const ItemTable = ({
+  items,
+  changeEditState,
+  onChangeItemQuantityHandler,
+  deleteItemHandler,
+}) => {
   if (items.length == 0) {
     return (
-      <p className="text-center fst-italic">There are no items added to the order!</p>
+      <p className="text-center fst-italic">
+        There are no items added to the order!
+      </p>
     );
   }
 
@@ -27,14 +34,45 @@ const ItemTable = ({ items }) => {
             <tr key={item.id}>
               <th scope="row">{item.id}</th>
               <td>{item.name}</td>
-              <td>{item.quantity}</td>
+              <td>
+                <input
+                  id={item.id}
+                  value={item.quantity}
+                  readOnly={!item.isEditable}
+                  onChange={(e) => onChangeItemQuantityHandler(e)}
+                  type="number"
+                  name="quantity"
+                  className={
+                    item.isValidQuantity
+                      ? "form-control"
+                      : "form-control custom-error-form-validation"
+                  }
+                />
+              </td>
               <td>{item.price}</td>
               <td className="btn-group-sm">
-                {/* <ViewButton to={`/view-item/${item.itemId}`} />
-              <EditButton to={`/edit-item/${item.itemId}`} />
-              <DeleteButton
-                deleteHandler={() => deleteItem(item.itemId)}
-              /> */}
+                {item.isEditable ? (
+                  <button
+                    disabled={item.quantity === 0 || !item.isValidQuantity}
+                    className="btn btn-success mx-2"
+                    onClick={() => changeEditState(item.id)}
+                  >
+                    Finish
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary mx-2"
+                    onClick={() => changeEditState(item.id)}
+                  >
+                    Edit
+                  </button>
+                )}
+                <button
+                  className="btn btn-danger mx-2"
+                  onClick={() => deleteItemHandler(item.id)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
