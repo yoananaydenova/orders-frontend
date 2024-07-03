@@ -17,11 +17,11 @@ const Home = () => {
           <p className="card-text">
             <ul>
               <li>
-                In the Items page, we can add items, view already created ones,
+                In the Items page, you can add items, view already created ones,
                 or delete them.
               </li>
               <li>
-                In the Orders page, we can create orders with already created
+                In the Orders page, you can create orders with already created
                 items, view existing orders and delete them.
               </li>
             </ul>
