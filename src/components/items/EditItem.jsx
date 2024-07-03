@@ -9,30 +9,30 @@ const EditItem = () => {
 
   const [item, setItem] = useState({
     name: "",
-    availableQuantity: "",
-    currentPrice: "",
+    quantity: "",
+    price: "",
   });
 
-  const { itemName, quantity, price } = item;
+  const { name, quantity, price } = item;
+
+  useEffect(() => {
+    loadItem();
+  }, []);
+
+  const loadItem = async () => {
+    const result = await axios.get(`http://localhost:8080/item/${id}`);
+    setItem(result.data);
+  };
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setItem((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  useEffect(() => {
-    loadItem();
-  }, []);
-
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     await axios.put(`http://localhost:8080/item/${id}`, item);
     navigate("/items");
-  };
-
-  const loadItem = async () => {
-    const result = await axios.get(`http://localhost:8080/item/${id}`);
-    setItem(result.data);
   };
 
   return (
@@ -45,10 +45,10 @@ const EditItem = () => {
               <label className="form-label w-100">
                 Item name
                 <input
-                  value={itemName}
+                  value={name}
                   onChange={onChangeHandler}
                   type="text"
-                  name="itemName"
+                  name="name"
                   className="form-control"
                 />
               </label>
