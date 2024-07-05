@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ItemTable from "../items/ItemTable";
+import EditOrderItemButtons from "./EditOrderItemButtons";
 
 const EditOrder = () => {
   const navigate = useNavigate();
@@ -26,55 +27,55 @@ const EditOrder = () => {
 
   const loadOrder = async () => {
     const result = await axios.get(`http://localhost:8080/order/${id}`);
+
+    result.data.items.map((item) => setAdditionalProperties(item));
+
     setOrder(result.data);
   };
 
-  const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setOrder((prevState) => ({ ...prevState, [name]: value }));
+  const setAdditionalProperties = (item) => {
+    item.isEditable = true;
+    item.isValidQuantity = true;
   };
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    await axios.put(`http://localhost:8080/order/${id}`, order);
+  const saveHandler = async (e) => {
+    const itemId = Number(e.target.id);
+    await axios.put(`http://localhost:8080/order/${id}`, itemId, order);
     navigate("/orders");
   };
 
-  const changeEditState = (id) => {
-    const orderItems = order.items;
-    const currentOrderItem = orderItems.find((item) => item.id === id);
-    currentOrderItem.isEditable = !currentOrderItem.isEditable;
-
-    setOrder({ items: orderItems });
-  };
-
-  const onChangeItemQuantityHandler = (e) => {
+  const onChangeItemQuantityHandler = async (e) => {
     const value = e.target.value ? Number(e.target.value) : "";
     const itemId = Number(e.target.id);
 
-    const currentRequestedItem = requestItems.find(
-      (item) => item.id === itemId
+    const currentRequestedItemResult = await axios.get(
+      `http://localhost:8080/item/${itemId}`
     );
 
     const orderItems = order.items;
     const currentOrderItem = orderItems.find((item) => item.id === itemId);
 
+    const currentRequestedItem = currentRequestedItemResult.data;
+
     currentRequestedItem.quantity += currentOrderItem.quantity;
+
     currentOrderItem.isValidQuantity =
       value >= 1 && value <= currentRequestedItem.quantity;
     currentRequestedItem.quantity -= value;
 
+    await axios.put(
+      `http://localhost:8080/item/${itemId}`,
+      currentRequestedItem
+    );
+
     currentOrderItem.quantity = value;
 
-    setOrder({ items: orderItems });
+    setOrder((prevState) => ({ ...prevState, items: orderItems }));
   };
 
   const deleteItemHandler = (id) => {
     const orderItems = order.items;
     const currentItem = orderItems.find((item) => item.id === id);
-
-    const currentRequestedItem = requestItems.find((item) => item.id === id);
-    currentRequestedItem.quantity += currentItem.quantity;
 
     orderItems.splice(currentItem, 1);
 
@@ -108,7 +109,7 @@ const EditOrder = () => {
             </div>
 
             <div className="d-flex justify-content-evenly mt-5 mb-4">
-              <button type="submit" className="btn btn-outline-success">
+              <button onClick={saveHandler} className="btn btn-outline-success">
                 Save
               </button>
 
@@ -119,9 +120,13 @@ const EditOrder = () => {
 
             <ItemTable
               items={order.items}
-              changeEditState={changeEditState}
               onChangeItemQuantityHandler={onChangeItemQuantityHandler}
-              deleteItemHandler={deleteItemHandler}
+              buttons={(item) => (
+                <EditOrderItemButtons
+                  item={item}
+                  deleteItemHandler={deleteItemHandler}
+                />
+              )}
             />
           </div>
         </div>
