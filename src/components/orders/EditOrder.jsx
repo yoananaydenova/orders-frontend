@@ -39,8 +39,7 @@ const EditOrder = () => {
   };
 
   const saveHandler = async (e) => {
-    const itemId = Number(e.target.id);
-    await axios.put(`http://localhost:8080/order/${id}`, itemId, order);
+    await axios.put(`http://localhost:8080/order/${order.orderId}`, order);
     navigate("/orders");
   };
 
@@ -62,12 +61,6 @@ const EditOrder = () => {
     currentOrderItem.isValidQuantity =
       value >= 1 && value <= currentRequestedItem.quantity;
     currentRequestedItem.quantity -= value;
-
-    await axios.put(
-      `http://localhost:8080/item/${itemId}`,
-      currentRequestedItem
-    );
-
     currentOrderItem.quantity = value;
 
     setOrder((prevState) => ({ ...prevState, items: orderItems }));
