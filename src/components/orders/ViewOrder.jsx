@@ -52,7 +52,7 @@ const ViewOrder = () => {
                 <h6>Items:</h6>
                 <ul className="list-group list-group-flush">
                   {order.items.map((item, index) => (
-                    <li className="list-group-item">
+                    <li key={item.id} className="list-group-item">
                       <div>
                         <b>Item name:</b>
                         <span className="mx-2"> {item.name}</span>
