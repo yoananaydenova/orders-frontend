@@ -13,7 +13,7 @@ const AddOrder = () => {
     const currentOrderItem = orderItems.find((item) => item.id === id);
     currentOrderItem.isEditable = !currentOrderItem.isEditable;
 
-    setOrder({ items: orderItems });
+    setOrder((prevState) => ({ ...prevState, items: orderItems }));
   };
 
   const onChangeItemQuantityHandler = (e) => {
@@ -34,8 +34,14 @@ const AddOrder = () => {
 
     currentOrderItem.quantity = value;
 
-    setOrder({ items: orderItems });
+    setOrder({
+      totalAmount: sumTotal(orderItems),
+      items: orderItems,
+    });
   };
+
+  const sumTotal = (arr) =>
+    arr.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
 
   const deleteItemHandler = (id) => {
     const orderItems = order.items;

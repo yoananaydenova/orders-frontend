@@ -90,6 +90,7 @@ const AddItemOrder = ({ order, setOrder, requestItems, setRequestItems }) => {
 
     const orderItems = order.items;
     const currentItem = orderItems.find((item) => item.id === selectedItem.id);
+
     if (currentItem) {
       currentItem.quantity += selectedItem.quantity;
     } else {
@@ -100,11 +101,17 @@ const AddItemOrder = ({ order, setOrder, requestItems, setRequestItems }) => {
     );
     currentRequestedItem.quantity -= selectedItem.quantity;
 
-    setOrder({ items: orderItems });
+    setOrder({
+      totalAmount: sumTotal(orderItems),
+      items: orderItems,
+    });
 
     setOptionsState("-1");
     setSelectedItem(defaultItem);
   };
+
+  const sumTotal = (arr) =>
+    arr.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
 
   return (
     <div>
