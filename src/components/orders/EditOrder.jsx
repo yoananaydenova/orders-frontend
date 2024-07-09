@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ItemTable from "../items/ItemTable";
 import EditOrderItemButtons from "./EditOrderItemButtons";
+import AddItemOrder from "./AddItemOrder";
 
 const EditOrder = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const EditOrder = () => {
     items: [],
     failedAddedItems: [],
   });
+
+  const [requestItems, setRequestItems] = useState([]);
 
   const { orderId, createdOn, updatedOn, totalAmount, items, failedAddedItem } =
     order;
@@ -66,6 +69,10 @@ const EditOrder = () => {
     setOrder((prevState) => ({ ...prevState, items: orderItems }));
   };
 
+  const addItemHandler = () => {
+    console.log("hello");
+  };
+
   const deleteItemHandler = (id) => {
     const orderItems = order.items;
     const currentItem = orderItems.find((item) => item.id === id);
@@ -99,6 +106,36 @@ const EditOrder = () => {
             <div className="d-flex justify-content-between mb-3">
               <h6>Total amount:</h6>
               <span>{totalAmount}</span>
+            </div>
+            <div className="accordion" id="accordionExample">
+              <div className="accordion-item">
+                <h2 className="accordion-header">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne"
+                    aria-expanded="false"
+                    aria-controls="collapseOne"
+                  >
+                    Add item menu
+                  </button>
+                </h2>
+                <div
+                  id="collapseOne"
+                  className="accordion-collapse collapse"
+                  data-bs-parent="#accordionExample"
+                >
+                  <div className="accordion-body">
+                    <AddItemOrder
+                      order={order}
+                      setOrder={setOrder}
+                      requestItems={requestItems}
+                      setRequestItems={setRequestItems}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="d-flex justify-content-evenly mt-5 mb-4">
