@@ -101,10 +101,11 @@ const AddItemOrder = ({ order, setOrder, requestItems, setRequestItems }) => {
     );
     currentRequestedItem.quantity -= selectedItem.quantity;
 
-    setOrder({
+    setOrder((prevState) => ({
+      ...prevState,
       totalAmount: sumTotal(orderItems),
       items: orderItems,
-    });
+    }));
 
     setOptionsState("-1");
     setSelectedItem(defaultItem);
