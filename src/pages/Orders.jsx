@@ -5,13 +5,13 @@ import EditButton from "../components/buttons/EditButton";
 import ViewButton from "../components/buttons/ViewButton";
 import DeleteButton from "../components/buttons/DeleteButton";
 import AddButton from "../components/buttons/AddButton";
+import moment from "moment";
 
 const Orders = () => {
-
   const [orders, setOrders] = useState([]);
-  
+
   const { id } = useParams();
-  
+
   useEffect(() => {
     loadOrders();
   }, []);
@@ -35,7 +35,7 @@ const Orders = () => {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">ICREATED ON</th>
+              <th scope="col">CREATED ON</th>
               <th scope="col">UPDATED ON</th>
               <th scope="col">TOTAL AMOUNT</th>
               <th scope="col" className="col-md-3 offset-md-3">
@@ -47,13 +47,15 @@ const Orders = () => {
             {orders.map((order, index) => (
               <tr key={order.orderId}>
                 <th scope="row">{order.orderId}</th>
-                <td>{order.createdOn}</td>
+                <td>{moment(order.createdOn).format("DD/MM/YYYY HH:mm:ss")}</td>
                 <td>{order.updatedOn}</td>
                 <td>{order.totalAmount}</td>
                 <td className="btn-group-sm">
-                  <ViewButton to={`/view-order/${order.orderId}`}/>
-                  <EditButton to={`/edit-order/${order.orderId}`}/>
-                  <DeleteButton deleteHandler={()=>deleteOrder(order.orderId)} />
+                  <ViewButton to={`/view-order/${order.orderId}`} />
+                  <EditButton to={`/edit-order/${order.orderId}`} />
+                  <DeleteButton
+                    deleteHandler={() => deleteOrder(order.orderId)}
+                  />
                 </td>
               </tr>
             ))}

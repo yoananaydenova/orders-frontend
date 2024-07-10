@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import ItemTable from "../items/ItemTable";
 import EditOrderItemButtons from "./EditOrderItemButtons";
 import AddItemOrder from "./AddItemOrder";
+import moment from "moment";
 
 const EditOrder = () => {
   const navigate = useNavigate();
@@ -77,9 +78,16 @@ const EditOrder = () => {
     const orderItems = order.items;
     const currentItem = orderItems.find((item) => item.id === id);
 
+    const currentItemTotalAmount =
+      order.totalAmount - currentItem.quantity * currentItem.price;
+
     orderItems.splice(currentItem, 1);
 
-    setOrder({ items: orderItems });
+    setOrder((prevState) => ({
+      ...prevState,
+      totalAmount: currentItemTotalAmount,
+      items: orderItems,
+    }));
   };
 
   return (
@@ -95,12 +103,16 @@ const EditOrder = () => {
 
             <div className="d-flex justify-content-between mb-3">
               <h6>Created on:</h6>
-              <span>{createdOn}</span>
+              <span>{moment(createdOn).format("DD/MM/YYYY HH:mm:ss")}</span>
             </div>
 
             <div className="d-flex justify-content-between mb-3">
               <h6>Updated on:</h6>
-              <span>{updatedOn}</span>
+              <span>
+                {updatedOn
+                  ? moment(updatedOn).format("DD/MM/YYYY HH:mm:ss")
+                  : "-"}
+              </span>
             </div>
 
             <div className="d-flex justify-content-between mb-3">
