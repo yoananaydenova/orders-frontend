@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import ItemTable from "../items/ItemTable";
 import AddOrderItemButtons from "./AddOrderItemButtons";
 import AddItemOrder from "./AddItemOrder";
+import AddItemButton from "../buttons/AddItemButton";
+import CreateOrderButton from "../buttons/CreateOrderButton";
 
 const AddOrder = () => {
   const [requestItems, setRequestItems] = useState([]);
@@ -69,6 +71,25 @@ const AddOrder = () => {
             setOrder={setOrder}
             requestItems={requestItems}
             setRequestItems={setRequestItems}
+            buttons={(
+              selectedItem,
+              isCurrentValidQuantity,
+              addItemHandler,
+              createOrderHandler
+            ) => (
+              <>
+                <AddItemButton
+                  isDisabled={
+                    selectedItem.quantity === 0 || !isCurrentValidQuantity
+                  }
+                  addItemHandler={addItemHandler}
+                />
+                <CreateOrderButton
+                  isDisabled={order.items.length == 0}
+                  createOrderHandler={createOrderHandler}
+                />
+              </>
+            )}
           />
 
           <div className="d-flex justify-content-between mb-3">

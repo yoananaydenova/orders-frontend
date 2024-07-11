@@ -5,6 +5,7 @@ import ItemTable from "../items/ItemTable";
 import EditOrderItemButtons from "./EditOrderItemButtons";
 import AddItemOrder from "./AddItemOrder";
 import moment from "moment";
+import AddItemButton from "../buttons/AddItemButton";
 
 const EditOrder = () => {
   const navigate = useNavigate();
@@ -148,6 +149,22 @@ const EditOrder = () => {
                       setOrder={setOrder}
                       requestItems={requestItems}
                       setRequestItems={setRequestItems}
+                      buttons={(
+                        selectedItem,
+                        isCurrentValidQuantity,
+                        addItemHandler,
+                        createOrderHandler
+                      ) => (
+                        <>
+                          <AddItemButton
+                            isDisabled={
+                              selectedItem.quantity === 0 ||
+                              !isCurrentValidQuantity
+                            }
+                            addItemHandler={addItemHandler}
+                          />
+                        </>
+                      )}
                     />
                   </div>
                 </div>
