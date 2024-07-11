@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const AddItemOrder = ({ order, setOrder, requestItems, setRequestItems }) => {
+const AddItemOrder = ({
+  order,
+  setOrder,
+  requestItems,
+  setRequestItems,
+  buttons,
+}) => {
   const navigate = useNavigate();
 
   const [options, setOptions] = useState([]);
@@ -58,6 +64,9 @@ const AddItemOrder = ({ order, setOrder, requestItems, setRequestItems }) => {
 
   const createOrderHandler = async (e) => {
     e.preventDefault();
+    if (order.items.length == 0) {
+      return;
+    }
     await axios.post("http://localhost:8080/order", order);
     navigate("/orders");
   };
@@ -168,19 +177,13 @@ const AddItemOrder = ({ order, setOrder, requestItems, setRequestItems }) => {
       </div>
 
       <div className="d-flex justify-content-evenly mt-5 mb-4">
-        <button
-          disabled={selectedItem.quantity === 0 || !isCurrentValidQuantity}
-          onClick={addItemHandler}
-          className="btn btn-outline-success"
-        >
-          + Add item
-        </button>
-        <button
-          onClick={createOrderHandler}
-          className="btn btn-outline-success"
-        >
-          Create
-        </button>
+       
+        {buttons(
+          selectedItem,
+          isCurrentValidQuantity,
+          addItemHandler,
+          createOrderHandler
+        )}
 
         <Link to="/orders" className="btn btn-outline-danger">
           Cancel
