@@ -51,24 +51,28 @@ const EditOrder = () => {
     const value = e.target.value ? Number(e.target.value) : "";
     const itemId = Number(e.target.id);
 
-    const currentRequestedItemResult = await axios.get(
-      `http://localhost:8080/item/${itemId}`
+    const currentRequestedItem = requestItems.find(
+      (item) => item.id === itemId
     );
 
     const orderItems = order.items;
     const currentOrderItem = orderItems.find((item) => item.id === itemId);
 
-    const currentRequestedItem = currentRequestedItemResult.data;
-
     currentRequestedItem.quantity += currentOrderItem.quantity;
-
     currentOrderItem.isValidQuantity =
       value >= 1 && value <= currentRequestedItem.quantity;
     currentRequestedItem.quantity -= value;
+
     currentOrderItem.quantity = value;
 
-    setOrder((prevState) => ({ ...prevState, items: orderItems }));
+    setOrder({
+      totalAmount: sumTotal(orderItems),
+      items: orderItems,
+    });
   };
+
+  const sumTotal = (arr) =>
+    arr.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
 
   const addItemHandler = () => {
     console.log("hello");
