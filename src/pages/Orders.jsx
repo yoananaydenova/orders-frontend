@@ -48,7 +48,11 @@ const Orders = () => {
               <tr key={order.orderId}>
                 <th scope="row">{order.orderId}</th>
                 <td>{moment(order.createdOn).format("DD/MM/YYYY HH:mm:ss")}</td>
-                <td>{order.updatedOn}</td>
+                <td>
+                  {order.updatedOn
+                    ? moment(order.updatedOn).format("DD/MM/YYYY HH:mm:ss")
+                    : "-"}
+                </td>
                 <td>{order.totalAmount}</td>
                 <td className="btn-group-sm">
                   <ViewButton to={`/view-order/${order.orderId}`} />
