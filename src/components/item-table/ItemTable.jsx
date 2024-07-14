@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 
 const ItemTable = ({ items, onChangeItemQuantityHandler, buttons }) => {
   if (items.length == 0) {
     return (
       <p className="text-center fst-italic">
-        There are no items added to the order!
+        The items list is empty!
       </p>
     );
   }
