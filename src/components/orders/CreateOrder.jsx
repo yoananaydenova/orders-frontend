@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
-import ItemTable from "../items/ItemTable";
-import AddOrderItemButtons from "./AddOrderItemButtons";
+import ItemTable from "../item-table/ItemTable";
 import AddItemOrder from "./AddItemOrder";
-import AddItemButton from "../buttons/AddItemButton";
-import CreateOrderButton from "../buttons/CreateOrderButton";
 
-const AddOrder = () => {
+import {
+  DeleteButton,
+  EditButton,
+  FinishButton,
+  CreateOrderButton,
+  AddItemButton,
+} from "../buttons/SimpleButton";
+
+const CreateOrder = () => {
   const [requestItems, setRequestItems] = useState([]);
 
   const [order, setOrder] = useState({ items: [] });
@@ -79,14 +84,15 @@ const AddOrder = () => {
             ) => (
               <>
                 <AddItemButton
-                  isDisabled={
+                  onClick={addItemHandler}
+                  disabled={
                     selectedItem.quantity === 0 || !isCurrentValidQuantity
                   }
-                  addItemHandler={addItemHandler}
                 />
                 <CreateOrderButton
-                  isDisabled={order.items.length == 0}
-                  createOrderHandler={createOrderHandler}
+                  name="Create Order"
+                  onClick={createOrderHandler}
+                  disabled={order.items.length == 0}
                 />
               </>
             )}
@@ -101,11 +107,20 @@ const AddOrder = () => {
             items={order.items}
             onChangeItemQuantityHandler={onChangeItemQuantityHandler}
             buttons={(item) => (
-              <AddOrderItemButtons
-                item={item}
-                changeEditState={changeEditState}
-                deleteItemHandler={deleteItemHandler}
-              />
+              <>
+                {item.isEditable ? (
+                  <FinishButton
+                    onClick={() => changeEditState(item.id)}
+                    disabled={item.quantity === 0 || !item.isValidQuantity}
+                  />
+                ) : (
+                  <EditButton onClick={() => changeEditState(item.id)} />
+                )}
+
+                <DeleteButton
+                  deleteHandler={() => deleteItemHandler(item.id)}
+                />
+              </>
             )}
           />
         </div>
@@ -114,4 +129,4 @@ const AddOrder = () => {
   );
 };
 
-export default AddOrder;
+export default CreateOrder;
