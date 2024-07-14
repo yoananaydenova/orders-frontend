@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { CancelButton } from "../buttons/LinkButton";
 
 const EditItem = () => {
   const navigate = useNavigate();
@@ -82,9 +83,7 @@ const EditItem = () => {
                 Edit
               </button>
 
-              <Link to="/items" className="btn btn-outline-danger">
-                Cancel
-              </Link>
+              <CancelButton to="/items" />
             </div>
           </form>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { CancelButton } from "../buttons/LinkButton";
 
 const AddItemOrder = ({
   order,
@@ -177,7 +178,6 @@ const AddItemOrder = ({
       </div>
 
       <div className="d-flex justify-content-evenly mt-5 mb-4">
-       
         {buttons(
           selectedItem,
           isCurrentValidQuantity,
@@ -185,9 +185,7 @@ const AddItemOrder = ({
           createOrderHandler
         )}
 
-        <Link to="/orders" className="btn btn-outline-danger">
-          Cancel
-        </Link>
+        <CancelButton to="/orders" />
       </div>
     </div>
   );

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import ItemTable from "../items/ItemTable";
-import EditOrderItemButtons from "./EditOrderItemButtons";
+import { useNavigate, useParams } from "react-router-dom";
+import ItemTable from "../item-table/ItemTable";
 import AddItemOrder from "./AddItemOrder";
 import moment from "moment";
-import AddItemButton from "../buttons/AddItemButton";
+import {
+  AddItemButton,
+  DeleteButton,
+  SaveButton,
+} from "../buttons/SimpleButton";
+import { CancelButton } from "../buttons/LinkButton";
 
 const EditOrder = () => {
   const navigate = useNavigate();
@@ -44,6 +48,7 @@ const EditOrder = () => {
   };
 
   const saveHandler = async (e) => {
+    console.log("first");
     await axios.put(`http://localhost:8080/order/${order.orderId}`, order);
     navigate("/orders");
   };
@@ -66,10 +71,11 @@ const EditOrder = () => {
 
     currentOrderItem.quantity = value;
 
-    setOrder({
+    setOrder((prevState) => ({
+      ...prevState,
       totalAmount: sumTotal(orderItems),
       items: orderItems,
-    });
+    }));
   };
 
   const sumTotal = (arr) =>
@@ -152,8 +158,7 @@ const EditOrder = () => {
                       buttons={(
                         selectedItem,
                         isCurrentValidQuantity,
-                        addItemHandler,
-                        createOrderHandler
+                        addItemHandler
                       ) => (
                         <>
                           <AddItemButton
@@ -172,22 +177,17 @@ const EditOrder = () => {
             </div>
 
             <div className="d-flex justify-content-evenly mt-5 mb-4">
-              <button onClick={saveHandler} className="btn btn-outline-success">
-                Save
-              </button>
+              <SaveButton onClick={saveHandler} disabled={false} />
 
-              <Link to="/orders" className="btn btn-outline-danger">
-                Cancel
-              </Link>
+              <CancelButton to="/orders" />
             </div>
 
             <ItemTable
               items={order.items}
               onChangeItemQuantityHandler={onChangeItemQuantityHandler}
               buttons={(item) => (
-                <EditOrderItemButtons
-                  item={item}
-                  deleteItemHandler={deleteItemHandler}
+                <DeleteButton
+                  deleteHandler={() => deleteItemHandler(item.id)}
                 />
               )}
             />

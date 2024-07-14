@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { CancelButton } from "../buttons/LinkButton";
 
 const AddItem = () => {
   const navigate = useNavigate();
@@ -71,9 +72,7 @@ const AddItem = () => {
                 Create
               </button>
 
-              <Link to="/items" className="btn btn-outline-danger">
-                Cancel
-              </Link>
+              <CancelButton to="/items" />
             </div>
           </form>
         </div>
