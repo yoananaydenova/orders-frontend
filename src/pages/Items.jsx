@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import EditButton from "../components/buttons/EditButton";
-import ViewButton from "../components/buttons/ViewButton";
-import DeleteButton from "../components/buttons/DeleteButton";
-import AddButton from "../components/buttons/AddButton";
+import { DeleteButton } from "../components/buttons/SimpleButton";
+import {
+  AddButton,
+  EditButton,
+  ViewButton,
+} from "../components/buttons/LinkButton";
 
 const Items = () => {
   const [items, setItems] = useState([]);
@@ -25,6 +27,7 @@ const Items = () => {
     loadItems();
   };
 
+  // TODO replace with ItemTable Component
   return (
     <div className="container">
       <AddButton name="Add item" to="/add-item" />
@@ -52,7 +55,7 @@ const Items = () => {
                 <td className="btn-group-sm">
                   <ViewButton to={`/view-item/${item.id}`} />
                   <EditButton to={`/edit-item/${item.id}`} />
-                  <DeleteButton deleteHandler={() => deleteItem(item.id)} />
+                  <DeleteButton onClick={() => deleteItem(item.id)} />
                 </td>
               </tr>
             ))}
