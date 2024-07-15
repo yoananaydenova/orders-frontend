@@ -14,18 +14,18 @@ const Home = () => {
       <div className="card position-absolute top-0 start-50 translate-middle-x mt-5">
         <div className="card-body">
           <h5 className="card-title">What you can do here?</h5>
-          <p className="card-text">
+          <div className="card-text">
             <ul>
               <li>
-                In the Items page, you can add items, view already created ones,
-                or delete them.
+                In the Items page, you can add items, view or edit already
+                created ones and delete them.
               </li>
               <li>
                 In the Orders page, you can create orders with already created
-                items, view existing orders and delete them.
+                items, view or edit existing orders and delete them.
               </li>
             </ul>
-          </p>
+          </div>
           <Link to="/add-item" className="btn btn-primary">
             Start creating items
           </Link>
