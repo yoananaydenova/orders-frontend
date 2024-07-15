@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CancelButton } from "../buttons/LinkButton";
 
-const AddItem = () => {
+const CreateItem = () => {
   const navigate = useNavigate();
 
   const [item, setItem] = useState({
@@ -81,4 +81,4 @@ const AddItem = () => {
   );
 };
 
-export default AddItem;
+export default CreateItem;
