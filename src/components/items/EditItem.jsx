@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { CancelButton } from "../buttons/LinkButton";
+import { SubmitButton } from "../buttons/SimpleButton";
 
 const EditItem = () => {
   const navigate = useNavigate();
@@ -79,10 +80,7 @@ const EditItem = () => {
               </label>
             </div>
             <div className="d-flex justify-content-evenly mt-5 mb-4">
-              <button type="submit" className="btn btn-outline-success">
-                Edit
-              </button>
-
+              <SubmitButton name="Save" />
               <CancelButton to="/items" />
             </div>
           </form>
