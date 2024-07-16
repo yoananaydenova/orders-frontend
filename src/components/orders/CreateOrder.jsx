@@ -120,9 +120,7 @@ const CreateOrder = () => {
                   <EditButton onClick={() => changeEditState(item.id)} />
                 )}
 
-                <DeleteButton
-                  deleteHandler={() => deleteItemHandler(item.id)}
-                />
+                <DeleteButton onClick={() => deleteItemHandler(item.id)} />
               </>
             )}
           />

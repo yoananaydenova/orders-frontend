@@ -186,9 +186,7 @@ const EditOrder = () => {
               items={order.items}
               onChangeItemQuantityHandler={onChangeItemQuantityHandler}
               buttons={(item) => (
-                <DeleteButton
-                  deleteHandler={() => deleteItemHandler(item.id)}
-                />
+                <DeleteButton onClick={() => deleteItemHandler(item.id)} />
               )}
             />
           </div>
