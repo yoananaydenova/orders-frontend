@@ -9,6 +9,7 @@ import {
   CreateOrderButton,
   AddItemButton,
 } from "../buttons/SimpleButton";
+import { CancelButton } from "../buttons/LinkButton";
 
 const CreateOrder = () => {
   const [requestItems, setRequestItems] = useState([]);
@@ -94,6 +95,8 @@ const CreateOrder = () => {
                   onClick={createOrderHandler}
                   disabled={order.items.length == 0}
                 />
+
+                <CancelButton to="/orders" />
               </>
             )}
           />
