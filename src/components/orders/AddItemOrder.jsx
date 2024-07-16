@@ -184,8 +184,6 @@ const AddItemOrder = ({
           addItemHandler,
           createOrderHandler
         )}
-
-        <CancelButton to="/orders" />
       </div>
     </div>
   );
