@@ -18,7 +18,7 @@ const Items = () => {
   }, []);
 
   const loadItems = async () => {
-    const result = await axios.get("http://localhost:8080/items");
+    const result = await axios.get("http://localhost:8080/all-items");
     setItems(result.data);
   };
 
