@@ -1,192 +1,221 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { CancelButton } from "../buttons/LinkButton";
 
-const AddItemOrder = ({
-  order,
-  setOrder,
-  requestItems,
-  setRequestItems,
-  buttons,
-}) => {
-  const navigate = useNavigate();
+const AddItemOrder = forwardRef(
+  ({ order, setOrder, requestItems, setRequestItems, buttons }, ref) => {
+    const navigate = useNavigate();
 
-  const [options, setOptions] = useState([]);
+    const [options, setOptions] = useState([]);
 
-  const [optionsState, setOptionsState] = useState("-1");
+    const [optionsState, setOptionsState] = useState("-1");
 
-  const defaultItem = {
-    id: "-1",
-    name: "",
-    quantity: 0,
-    price: "",
-    isEditable: false,
-    isValidQuantity: true,
-  };
+    const defaultItem = {
+      id: "-1",
+      name: "",
+      quantity: 0,
+      price: "",
+      isEditable: false,
+      isValidQuantity: true,
+    };
 
-  const [selectedItem, setSelectedItem] = useState(defaultItem);
+    const [selectedItem, setSelectedItem] = useState(defaultItem);
 
-  const [isCurrentValidQuantity, setIsCurrentValidQuantity] = useState(true);
+    const [isCurrentValidQuantity, setIsCurrentValidQuantity] = useState(true);
 
-  useEffect(() => {
-    loadItems();
-  }, []);
+    useImperativeHandle(ref, () => {
+      return {
+        addOption,
+        removeOption,
+        setDefaultOption,
+      };
+    });
 
-  const loadItems = async () => {
-    const result = await axios.get("http://localhost:8080/items");
+    const addOption = (newOption) => {
+      const currentOption = options.find((opt) => opt.id === newOption.id);
+      if (!currentOption) {
+        setOptions((optionsList) => [...optionsList, newOption]);
+      }
+    };
 
-    setRequestItems([...result.data]);
+    const removeOption = (id) => {
+      setOptions((optionsList) => optionsList.filter((item) => item.id !== id));
+    };
 
-    const resultOtionItems = result.data.map((item) => ({
-      name: item.name,
-      id: item.id,
-    }));
+    const setDefaultOption = () => {
+      setOptionsState("-1");
+      setSelectedItem(defaultItem);
+    };
 
-    setOptions(resultOtionItems);
-  };
+    useEffect(() => {
+      loadItems();
+    }, []);
 
-  const onChangeQuantityHandler = (e) => {
-    const value = e.target.value ? Number(e.target.value) : "";
-    const itemId = Number(e.target.id);
+    const loadItems = async () => {
+      const result = await axios.get("http://localhost:8080/available-items");
 
-    const currentRequestedItem = requestItems.find(
-      (item) => item.id === itemId
-    );
+      setRequestItems([...result.data]);
 
-    setIsCurrentValidQuantity(
-      value >= 1 && value <= currentRequestedItem.quantity
-    );
-    setSelectedItem((prevState) => ({
-      ...prevState,
-      [e.target.name]: value,
-    }));
-  };
+      const resultOtionItems = result.data.map((item) => ({
+        name: item.name,
+        id: item.id,
+      }));
 
-  const createOrderHandler = async (e) => {
-    e.preventDefault();
-    if (order.items.length == 0) {
-      return;
-    }
-    await axios.post("http://localhost:8080/order", order);
-    navigate("/orders");
-  };
+      setOptions(resultOtionItems);
+    };
 
-  const handleSelectChange = (e) => {
-    let currentItem;
+    const onChangeQuantityHandler = (e) => {
+      const value = e.target.value ? Number(e.target.value) : "";
+      const itemId = Number(e.target.id);
 
-    if (e.target.value === "-1") {
-      currentItem = defaultItem;
-    } else {
-      currentItem = requestItems.find((i) => i.id == e.target.value);
-    }
-    currentItem.isEditable = false;
-    currentItem.isValidQuantity = currentItem.quantity > 0;
+      const currentRequestedItem = requestItems.find(
+        (item) => item.id === itemId
+      );
 
-    setIsCurrentValidQuantity(currentItem.quantity > 0);
+      setIsCurrentValidQuantity(
+        value >= 1 && value <= currentRequestedItem.quantity
+      );
+      setSelectedItem((prevState) => ({
+        ...prevState,
+        [e.target.name]: value,
+      }));
+    };
 
-    setOptionsState(e.target.value);
-    setSelectedItem(currentItem);
-  };
+    const createOrderHandler = async (e) => {
+      e.preventDefault();
+      if (order.items.length == 0) {
+        return;
+      }
+      await axios.post("http://localhost:8080/order", order);
+      navigate("/orders");
+    };
 
-  const addItemHandler = () => {
-    if (selectedItem.id === "-1") {
-      return;
-    }
+    const handleSelectChange = (e) => {
+      let currentItem;
 
-    if (!isCurrentValidQuantity) {
-      return;
-    }
+      if (e.target.value === "-1") {
+        currentItem = defaultItem;
+      } else {
+        currentItem = requestItems.find((i) => i.id == e.target.value);
+      }
+      currentItem.isEditable = false;
+      currentItem.isValidQuantity = currentItem.quantity > 0;
 
-    const orderItems = order.items;
-    const currentItem = orderItems.find((item) => item.id === selectedItem.id);
+      setIsCurrentValidQuantity(currentItem.quantity > 0);
 
-    if (currentItem) {
-      currentItem.quantity += selectedItem.quantity;
-    } else {
-      orderItems.push({ ...selectedItem });
-    }
-    const currentRequestedItem = requestItems.find(
-      (item) => item.id === selectedItem.id
-    );
-    currentRequestedItem.quantity -= selectedItem.quantity;
+      setOptionsState(e.target.value);
+      setSelectedItem(currentItem);
+    };
 
-    setOrder((prevState) => ({
-      ...prevState,
-      totalAmount: sumTotal(orderItems),
-      items: orderItems,
-    }));
+    const addItemHandler = () => {
+      if (selectedItem.id === "-1") {
+        return;
+      }
 
-    setOptionsState("-1");
-    setSelectedItem(defaultItem);
-  };
+      if (!isCurrentValidQuantity) {
+        return;
+      }
 
-  const sumTotal = (arr) =>
-    arr.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
+      const orderItems = order.items;
+      const currentItem = orderItems.find(
+        (item) => item.id === selectedItem.id
+      );
 
-  return (
-    <div>
-      <div className="mb-3">
-        <label className="form-label w-100">Item name</label>
+      if (currentItem) {
+        currentItem.quantity += selectedItem.quantity;
+      } else {
+        orderItems.push({ ...selectedItem });
+      }
+      const currentRequestedItem = requestItems.find(
+        (item) => item.id === selectedItem.id
+      );
+      currentRequestedItem.quantity -= selectedItem.quantity;
 
-        <select
-          onChange={handleSelectChange}
-          value={optionsState}
-          className="form-select"
-        >
-          <option key="-1" value="-1" disabled>
-            Choose an option
-          </option>
-          {options.map((option, index) => (
-            <option key={option.id} value={option.id}>
-              {option.name}
+      setOrder((prevState) => ({
+        ...prevState,
+        totalAmount: sumTotal(orderItems),
+        items: orderItems,
+      }));
+
+      if (currentRequestedItem.quantity === 0) {
+        removeOption(currentRequestedItem.id);
+      }
+
+      setDefaultOption();
+    };
+
+    const sumTotal = (arr) =>
+      arr.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
+
+    return (
+      <div>
+        <div className="mb-3">
+          <label className="form-label w-100">Item name</label>
+
+          <select
+            onChange={handleSelectChange}
+            value={optionsState}
+            className="form-select"
+          >
+            <option key="-1" value="-1" disabled>
+              Choose an option
             </option>
-          ))}
-        </select>
-      </div>
+            {options.map((option, index) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div className="mb-3">
-        <label className="form-label w-100">
-          Price
-          <input
-            defaultValue={selectedItem.price}
-            readOnly
-            type="text"
-            name="price"
-            className="form-control"
-          />
-        </label>
-      </div>
+        <div className="mb-3">
+          <label className="form-label w-100">
+            Price
+            <input
+              defaultValue={selectedItem.price}
+              readOnly
+              type="text"
+              name="price"
+              className="form-control"
+            />
+          </label>
+        </div>
 
-      <div className="mb-3">
-        <label className="form-label w-100">
-          Quantity
-          <input
-            id={selectedItem.id}
-            value={selectedItem.quantity}
-            onChange={(e) => onChangeQuantityHandler(e)}
-            readOnly={selectedItem.id === "-1"}
-            type="number"
-            name="quantity"
-            className={
-              isCurrentValidQuantity
-                ? "form-control"
-                : "form-control custom-error-form-validation"
-            }
-          />
-        </label>
-      </div>
+        <div className="mb-3">
+          <label className="form-label w-100">
+            Quantity
+            <input
+              id={selectedItem.id}
+              value={selectedItem.quantity}
+              onChange={(e) => onChangeQuantityHandler(e)}
+              readOnly={selectedItem.id === "-1"}
+              type="number"
+              name="quantity"
+              className={
+                isCurrentValidQuantity
+                  ? "form-control"
+                  : "form-control custom-error-form-validation"
+              }
+            />
+          </label>
+        </div>
 
-      <div className="d-flex justify-content-evenly mt-5 mb-4">
-        {buttons(
-          selectedItem,
-          isCurrentValidQuantity,
-          addItemHandler,
-          createOrderHandler
-        )}
+        <div className="d-flex justify-content-evenly mt-5 mb-4">
+          {buttons(
+            selectedItem,
+            isCurrentValidQuantity,
+            addItemHandler,
+            createOrderHandler
+          )}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default AddItemOrder;
