@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import ItemTable from "../item-table/ItemTable";
 import AddItemOrder from "./AddItemOrder";
 import moment from "moment";
-import {
-  AddItemButton,
-  DeleteButton,
-  SaveButton,
-} from "../buttons/SimpleButton";
+import { DeleteButton, SaveButton } from "../buttons/SimpleButton";
 import { CancelButton } from "../buttons/LinkButton";
+import { deleteObjectFromArray } from "../../Util";
 
 const EditOrder = () => {
+  const addItemOrderRef = useRef();
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -48,7 +46,6 @@ const EditOrder = () => {
   };
 
   const saveHandler = async (e) => {
-    console.log("first");
     await axios.put(`http://localhost:8080/order/${order.orderId}`, order);
     navigate("/orders");
   };
@@ -64,12 +61,22 @@ const EditOrder = () => {
     const orderItems = order.items;
     const currentOrderItem = orderItems.find((item) => item.id === itemId);
 
-    currentRequestedItem.quantity += currentOrderItem.quantity;
-    currentOrderItem.isValidQuantity =
-      value >= 1 && value <= currentRequestedItem.quantity;
-    currentRequestedItem.quantity -= value;
+    const allAvailableQuantity =
+      currentRequestedItem.quantity + currentOrderItem.quantity;
 
+    const isValidQuantity = value >= 1 && value <= allAvailableQuantity;
+
+    currentOrderItem.isValidQuantity = isValidQuantity;
     currentOrderItem.quantity = value;
+
+    currentRequestedItem.quantity = allAvailableQuantity - value;
+
+    if (currentRequestedItem.quantity == 0) {
+      addItemOrderRef.current.addOption({
+        name: currentRequestedItem.name,
+        id: currentRequestedItem.itemId,
+      });
+    }
 
     setOrder((prevState) => ({
       ...prevState,
@@ -81,22 +88,43 @@ const EditOrder = () => {
   const sumTotal = (arr) =>
     arr.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
 
-  const addItemHandler = () => {
-    console.log("hello");
-  };
-
   const deleteItemHandler = (id) => {
     const orderItems = order.items;
     const currentItem = orderItems.find((item) => item.id === id);
 
-    const currentItemTotalAmount =
-      order.totalAmount - currentItem.quantity * currentItem.price;
+    let currentRequestedItem = requestItems.find((item) => item.id === id);
 
-    orderItems.splice(currentItem, 1);
+    if (!currentRequestedItem) {
+      currentRequestedItem = {
+        id: id,
+        name: currentItem.name,
+        price: currentItem.price,
+        quantity: currentItem.quantity,
+      };
+      requestItems.push(currentRequestedItem);
+
+      addItemOrderRef.current.addOption({
+        name: currentItem.name,
+        id: currentItem.id,
+      });
+    } else {
+      currentRequestedItem.quantity += currentItem.quantity;
+    }
+
+    if (currentRequestedItem.quantity == 0) {
+      addItemOrderRef.current.addOption({
+        name: currentItem.name,
+        id: currentItem.id,
+      });
+    }
+
+    deleteObjectFromArray(orderItems, currentItem);
+
+    const currentItemTotalAmount = currentItem.quantity * currentItem.price;
 
     setOrder((prevState) => ({
       ...prevState,
-      totalAmount: currentItemTotalAmount,
+      totalAmount: (prevState.totalAmount -= currentItemTotalAmount),
       items: orderItems,
     }));
   };
@@ -151,25 +179,11 @@ const EditOrder = () => {
                 >
                   <div className="accordion-body">
                     <AddItemOrder
+                      ref={addItemOrderRef}
                       order={order}
                       setOrder={setOrder}
                       requestItems={requestItems}
                       setRequestItems={setRequestItems}
-                      buttons={(
-                        selectedItem,
-                        isCurrentValidQuantity,
-                        addItemHandler
-                      ) => (
-                        <>
-                          <AddItemButton
-                            isDisabled={
-                              selectedItem.quantity === 0 ||
-                              !isCurrentValidQuantity
-                            }
-                            addItemHandler={addItemHandler}
-                          />
-                        </>
-                      )}
                     />
                   </div>
                 </div>

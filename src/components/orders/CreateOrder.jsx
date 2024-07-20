@@ -7,12 +7,15 @@ import {
   EditButton,
   FinishButton,
   CreateOrderButton,
-  AddItemButton,
 } from "../buttons/SimpleButton";
 import { CancelButton } from "../buttons/LinkButton";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { deleteObjectFromArray } from "../../Util";
 
 const CreateOrder = () => {
   const addItemOrderRef = useRef();
+  const navigate = useNavigate();
 
   const [requestItems, setRequestItems] = useState([]);
 
@@ -32,7 +35,6 @@ const CreateOrder = () => {
     const currentRequestedItem = requestItems.find((item) => item.id === id);
 
     if (!currentRequestedItem || currentRequestedItem.quantity < 0) {
-      console.log("first");
       return;
     }
 
@@ -49,7 +51,6 @@ const CreateOrder = () => {
 
   const onChangeItemQuantityHandler = (e) => {
     const value = e.target.value ? Number(e.target.value) : "";
-   
     const itemId = Number(e.target.id);
 
     const currentRequestedItem = requestItems.find(
@@ -59,15 +60,16 @@ const CreateOrder = () => {
     const orderItems = order.items;
     const currentOrderItem = orderItems.find((item) => item.id === itemId);
 
-    currentRequestedItem.quantity += currentOrderItem.quantity;
+    const allAvailableQuantity =
+      currentRequestedItem.quantity + currentOrderItem.quantity;
 
-    currentOrderItem.isValidQuantity =
-      value >= 1 && value <= currentRequestedItem.quantity;
+    const isValidQuantity = value >= 1 && value <= allAvailableQuantity;
 
-    currentRequestedItem.quantity -= value;
-
+    currentOrderItem.isValidQuantity = isValidQuantity;
     currentOrderItem.quantity = value;
-   
+
+    currentRequestedItem.quantity = allAvailableQuantity - value;
+
     setOrder({
       totalAmount: sumTotal(orderItems),
       items: orderItems,
@@ -90,13 +92,23 @@ const CreateOrder = () => {
       });
     }
     currentRequestedItem.quantity += currentItem.quantity;
-    orderItems.splice(currentItem, 1);
+    deleteObjectFromArray(orderItems, currentItem);
 
     const currentItemTotalAmount = currentItem.quantity * currentItem.price;
+
     setOrder((prevState) => ({
       totalAmount: (prevState.totalAmount -= currentItemTotalAmount),
       items: orderItems,
     }));
+  };
+
+  const createOrderHandler = async (e) => {
+    e.preventDefault();
+    if (order.items.length == 0) {
+      return;
+    }
+    await axios.post("http://localhost:8080/order", order);
+    navigate("/orders");
   };
 
   return (
@@ -111,29 +123,14 @@ const CreateOrder = () => {
             setOrder={setOrder}
             requestItems={requestItems}
             setRequestItems={setRequestItems}
-            buttons={(
-              selectedItem,
-              isCurrentValidQuantity,
-              addItemHandler,
-              createOrderHandler
-            ) => (
-              <>
-                <AddItemButton
-                  onClick={addItemHandler}
-                  disabled={
-                    selectedItem.quantity === 0 || !isCurrentValidQuantity
-                  }
-                />
-                <CreateOrderButton
-                  name="Create Order"
-                  onClick={createOrderHandler}
-                  disabled={order.items.length == 0}
-                />
-
-                <CancelButton to="/orders" />
-              </>
-            )}
-          />
+          >
+            <CreateOrderButton
+              name="Create Order"
+              onClick={createOrderHandler}
+              disabled={order.items.length == 0}
+            />
+            <CancelButton to="/orders" />
+          </AddItemOrder>
 
           <div className="d-flex justify-content-between mb-3">
             <h6>Total amount:</h6>
