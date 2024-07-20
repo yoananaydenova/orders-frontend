@@ -4,13 +4,12 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AddItemButton } from "../buttons/SimpleButton";
+import { sortOptionsByName } from "../../Util";
 
 const AddItemOrder = forwardRef(
-  ({ order, setOrder, requestItems, setRequestItems, buttons }, ref) => {
-    const navigate = useNavigate();
-
+  ({ order, setOrder, requestItems, setRequestItems, children }, ref) => {
     const [options, setOptions] = useState([]);
 
     const [optionsState, setOptionsState] = useState("-1");
@@ -39,7 +38,9 @@ const AddItemOrder = forwardRef(
     const addOption = (newOption) => {
       const currentOption = options.find((opt) => opt.id === newOption.id);
       if (!currentOption) {
-        setOptions((optionsList) => [...optionsList, newOption]);
+        setOptions((optionsList) =>
+          [...optionsList, newOption].sort(sortOptionsByName)
+        );
       }
     };
 
@@ -84,15 +85,6 @@ const AddItemOrder = forwardRef(
         ...prevState,
         [e.target.name]: value,
       }));
-    };
-
-    const createOrderHandler = async (e) => {
-      e.preventDefault();
-      if (order.items.length == 0) {
-        return;
-      }
-      await axios.post("http://localhost:8080/order", order);
-      navigate("/orders");
     };
 
     const handleSelectChange = (e) => {
@@ -206,12 +198,11 @@ const AddItemOrder = forwardRef(
         </div>
 
         <div className="d-flex justify-content-evenly mt-5 mb-4">
-          {buttons(
-            selectedItem,
-            isCurrentValidQuantity,
-            addItemHandler,
-            createOrderHandler
-          )}
+          <AddItemButton
+            disabled={selectedItem.quantity === 0 || !isCurrentValidQuantity}
+            onClick={addItemHandler}
+          />
+          {children}
         </div>
       </div>
     );
