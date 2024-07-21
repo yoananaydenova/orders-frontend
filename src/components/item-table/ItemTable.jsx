@@ -2,11 +2,7 @@ import React from "react";
 
 const ItemTable = ({ items, onChangeItemQuantityHandler, buttons }) => {
   if (items.length == 0) {
-    return (
-      <p className="text-center fst-italic">
-        The items list is empty!
-      </p>
-    );
+    return <p className="text-center fst-italic">The items list is empty!</p>;
   }
 
   return (
@@ -25,7 +21,7 @@ const ItemTable = ({ items, onChangeItemQuantityHandler, buttons }) => {
           </tr>
         </thead>
         <tbody className="table-group-divider align-middle">
-          {items.map((item, index) => (
+          {items.map((item) => (
             <tr key={item.id}>
               <th scope="row">{item.id}</th>
               <td>{item.name}</td>
@@ -33,7 +29,7 @@ const ItemTable = ({ items, onChangeItemQuantityHandler, buttons }) => {
                 <input
                   id={item.id}
                   value={item.quantity}
-                  readOnly={!item.isEditable}
+                  readOnly={false}
                   onChange={(e) => onChangeItemQuantityHandler(e)}
                   type="number"
                   name="quantity"
