@@ -46,6 +46,8 @@ const EditOrder = () => {
   };
 
   const onChangeItemQuantityHandler = async (e) => {
+    addItemOrderRef.current.setDefaultOption();
+
     const value = e.target.value ? Number(e.target.value) : "";
     const itemId = Number(e.target.id);
 
@@ -66,10 +68,12 @@ const EditOrder = () => {
 
     currentRequestedItem.quantity = allAvailableQuantity - value;
 
-    if (currentRequestedItem.quantity == 0) {
+    if (currentRequestedItem.quantity === 0) {
+      addItemOrderRef.current.removeOption(currentRequestedItem.id);
+    } else {
       addItemOrderRef.current.addOption({
+        id: currentRequestedItem.id,
         name: currentRequestedItem.name,
-        id: currentRequestedItem.itemId,
       });
     }
 
