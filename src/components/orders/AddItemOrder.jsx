@@ -7,6 +7,7 @@ import React, {
 import axios from "axios";
 import { AddItemButton } from "../buttons/SimpleButton";
 import { sortOptionsByName } from "../../Util";
+import ErrorMessage from "../common/ErrorMessage";
 
 const AddItemOrder = forwardRef(
   ({ order, setOrder, requestItems, setRequestItems, children }, ref) => {
@@ -95,6 +96,7 @@ const AddItemOrder = forwardRef(
       } else {
         currentItem = requestItems.find((i) => i.id == e.target.value);
       }
+
       currentItem.isEditable = false;
       currentItem.isValidQuantity = currentItem.quantity > 0;
 
@@ -157,7 +159,7 @@ const AddItemOrder = forwardRef(
             <option key="-1" value="-1" disabled>
               Choose an option
             </option>
-            {options.map((option, index) => (
+            {options.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.name}
               </option>
@@ -195,6 +197,9 @@ const AddItemOrder = forwardRef(
               }
             />
           </label>
+          {isCurrentValidQuantity ? null : (
+            <ErrorMessage message={"The quantity value is incorrect!"} />
+          )}
         </div>
 
         <div className="d-flex justify-content-evenly mt-5 mb-4">

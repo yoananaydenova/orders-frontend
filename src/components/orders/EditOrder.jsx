@@ -35,9 +35,14 @@ const EditOrder = () => {
   const loadOrder = async () => {
     const result = await axios.get(`http://localhost:8080/order/${id}`);
 
-    result.data.items.map((item) => (item.isValidQuantity = true));
+    result.data.items.map((item) => setAdditionalProperties(item));
 
     setOrder(result.data);
+  };
+
+  const setAdditionalProperties = (item) => {
+    item.isValidQuantity = true;
+    item.isEditable = true;
   };
 
   const saveHandler = async (e) => {

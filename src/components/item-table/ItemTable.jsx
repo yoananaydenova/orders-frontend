@@ -1,4 +1,5 @@
 import React from "react";
+import ErrorMessage from "../common/ErrorMessage";
 
 const ItemTable = ({ items, onChangeItemQuantityHandler, buttons }) => {
   if (items.length == 0) {
@@ -29,7 +30,7 @@ const ItemTable = ({ items, onChangeItemQuantityHandler, buttons }) => {
                 <input
                   id={item.id}
                   value={item.quantity}
-                  readOnly={false}
+                  readOnly={!item.isEditable}
                   onChange={(e) => onChangeItemQuantityHandler(e)}
                   type="number"
                   name="quantity"
@@ -39,6 +40,9 @@ const ItemTable = ({ items, onChangeItemQuantityHandler, buttons }) => {
                       : "form-control custom-error-form-validation"
                   }
                 />
+                {item.isValidQuantity ? null : (
+                  <ErrorMessage message={"The quantity value is incorrect!"} />
+                )}
               </td>
               <td>{item.price}</td>
               <td className="btn-group-sm">{buttons(item)}</td>
