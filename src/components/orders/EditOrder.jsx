@@ -7,6 +7,7 @@ import moment from "moment";
 import { DeleteButton, SaveButton } from "../buttons/SimpleButton";
 import { CancelButton } from "../buttons/LinkButton";
 import { deleteObjectFromArray } from "../../Util";
+import toast from "react-hot-toast";
 
 const EditOrder = () => {
   const addItemOrderRef = useRef();
@@ -47,6 +48,7 @@ const EditOrder = () => {
 
   const saveHandler = async (e) => {
     await axios.put(`http://localhost:8080/order/${order.orderId}`, order);
+    toast.success("The order is successfully edited!");
     navigate("/orders");
   };
 
@@ -56,12 +58,22 @@ const EditOrder = () => {
     const value = e.target.value ? Number(e.target.value) : "";
     const itemId = Number(e.target.id);
 
-    const currentRequestedItem = requestItems.find(
-      (item) => item.id === itemId
-    );
-
     const orderItems = order.items;
     const currentOrderItem = orderItems.find((item) => item.id === itemId);
+
+    let currentRequestedItem = requestItems.find((item) => item.id === itemId);
+
+    if (!currentRequestedItem) {
+      currentRequestedItem = {
+        id: currentOrderItem.id,
+        isEditable: true,
+        isValidQuantity: true,
+        name: currentOrderItem.name,
+        price: currentOrderItem.price,
+        quantity: 0,
+      };
+      setRequestItems((prevState) => [...prevState, currentRequestedItem]);
+    }
 
     const allAvailableQuantity =
       currentRequestedItem.quantity + currentOrderItem.quantity;
@@ -131,6 +143,7 @@ const EditOrder = () => {
       totalAmount: (prevState.totalAmount -= currentItemTotalAmount),
       items: orderItems,
     }));
+    toast.success("The item is successfully deleted from the order!");
   };
 
   return (
