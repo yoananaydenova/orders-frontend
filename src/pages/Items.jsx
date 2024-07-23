@@ -7,6 +7,7 @@ import {
   EditButton,
   ViewButton,
 } from "../components/buttons/LinkButton";
+import toast from "react-hot-toast";
 
 const Items = () => {
   const [items, setItems] = useState([]);
@@ -25,6 +26,7 @@ const Items = () => {
   const deleteItem = async (id) => {
     await axios.delete(`http://localhost:8080/item/${id}`);
     loadItems();
+    toast.success("The item is successfully deleted!");
   };
 
   // TODO replace with ItemTable Component

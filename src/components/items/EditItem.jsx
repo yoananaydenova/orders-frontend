@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { CancelButton } from "../buttons/LinkButton";
 import { SubmitButton } from "../buttons/SimpleButton";
+import toast from "react-hot-toast";
 
 const EditItem = () => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const EditItem = () => {
     e.preventDefault();
     await axios.put(`http://localhost:8080/item/${id}`, item);
     navigate("/items");
+    toast.success("The item is successfully edited!");
   };
 
   return (

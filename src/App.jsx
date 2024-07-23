@@ -1,7 +1,7 @@
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/common/Navbar";
 import Home from "./pages/Home";
 import Items from "./pages/Items";
 import Orders from "./pages/Orders";
@@ -11,11 +11,13 @@ import ViewItem from "./components/items/ViewItem";
 import CreateOrder from "./components/orders/CreateOrder";
 import EditOrder from "./components/orders/EditOrder";
 import ViewOrder from "./components/orders/ViewOrder";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
+      <Toaster />
       <Routes>
         <Route element={<Home />} path="/" />
 

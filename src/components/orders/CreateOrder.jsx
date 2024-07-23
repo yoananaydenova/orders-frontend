@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import ItemTable from "../item-table/ItemTable";
 import AddItemOrder from "./AddItemOrder";
-
+import toast from "react-hot-toast";
 import {
   DeleteButton,
   EditButton,
@@ -59,7 +59,8 @@ const CreateOrder = () => {
 
     const orderItems = order.items;
     const currentOrderItem = orderItems.find((item) => item.id === itemId);
-
+    console.log("currentRequestedItem1", currentRequestedItem);
+    console.log("requestItems1", requestItems);
     const allAvailableQuantity =
       currentRequestedItem.quantity + currentOrderItem.quantity;
 
@@ -100,6 +101,8 @@ const CreateOrder = () => {
       totalAmount: (prevState.totalAmount -= currentItemTotalAmount),
       items: orderItems,
     }));
+
+    toast.success("The item is successfully deleted from the order!");
   };
 
   const createOrderHandler = async (e) => {
@@ -108,6 +111,7 @@ const CreateOrder = () => {
       return;
     }
     await axios.post("http://localhost:8080/order", order);
+    toast.success("The order is successfully created!");
     navigate("/orders");
   };
 

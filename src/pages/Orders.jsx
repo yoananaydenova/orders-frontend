@@ -8,6 +8,7 @@ import {
   ViewButton,
 } from "../components/buttons/LinkButton";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -26,6 +27,7 @@ const Orders = () => {
   const deleteOrder = async (id) => {
     await axios.delete(`http://localhost:8080/order/${id}`);
     loadOrders();
+    toast.success("The order is successfully deleted!");
   };
 
   // TODO replace with ItemTable Component

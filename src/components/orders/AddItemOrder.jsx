@@ -8,6 +8,7 @@ import axios from "axios";
 import { AddItemButton } from "../buttons/SimpleButton";
 import { sortOptionsByName } from "../../Util";
 import ErrorMessage from "../common/ErrorMessage";
+import toast from "react-hot-toast";
 
 const AddItemOrder = forwardRef(
   ({ order, setOrder, requestItems, setRequestItems, children }, ref) => {
@@ -141,6 +142,8 @@ const AddItemOrder = forwardRef(
       }
 
       setDefaultOption();
+
+      toast.success("The item is successfully added to the order!");
     };
 
     const sumTotal = (arr) =>
