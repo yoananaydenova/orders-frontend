@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import ItemTable from "../item-table/ItemTable";
+import ItemTable from "../common/ItemTable";
 import AddItemOrder from "./AddItemOrder";
 import toast from "react-hot-toast";
 import {

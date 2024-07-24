@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import ItemTable from "../item-table/ItemTable";
+import ItemTable from "../common/ItemTable";
 import AddItemOrder from "./AddItemOrder";
 import moment from "moment";
 import { DeleteButton, SaveButton } from "../buttons/SimpleButton";

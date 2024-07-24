@@ -9,6 +9,7 @@ import {
 } from "../components/buttons/LinkButton";
 import moment from "moment";
 import toast from "react-hot-toast";
+import ItemTable from "../components/common/ItemTable";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -30,7 +31,6 @@ const Orders = () => {
     toast.success("The order is successfully deleted!");
   };
 
-  // TODO replace with ItemTable Component
   return (
     <div className="container">
       <AddButton name="Add order" to="/add-order" />
