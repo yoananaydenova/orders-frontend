@@ -6,7 +6,7 @@ import {
   DeleteButton,
   EditButton,
   FinishButton,
-  CreateOrderButton,
+  CreateButton,
 } from "../buttons/SimpleButton";
 import { CancelButton } from "../buttons/LinkButton";
 import { useNavigate } from "react-router-dom";
@@ -128,7 +128,7 @@ const CreateOrder = () => {
             requestItems={requestItems}
             setRequestItems={setRequestItems}
           >
-            <CreateOrderButton
+            <CreateButton
               name="Create Order"
               onClick={createOrderHandler}
               disabled={order.items.length == 0}

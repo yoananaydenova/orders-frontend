@@ -82,7 +82,11 @@ const EditItem = () => {
               </label>
             </div>
             <div className="d-flex justify-content-evenly mt-5 mb-4">
-              <SubmitButton name="Save" />
+              <SubmitButton
+                name="Save"
+                disabled={!(name && price && quantity)}
+              />
+
               <CancelButton to="/items" />
             </div>
           </form>

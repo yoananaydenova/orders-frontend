@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CancelButton } from "../buttons/LinkButton";
 import toast from "react-hot-toast";
+import { SubmitButton } from "../buttons/SimpleButton";
 
 const CreateItem = () => {
   const navigate = useNavigate();
@@ -70,9 +71,10 @@ const CreateItem = () => {
               </label>
             </div>
             <div className="d-flex justify-content-evenly mt-5 mb-4">
-              <button type="submit" className="btn btn-outline-success">
-                Create
-              </button>
+              <SubmitButton
+                name="Create Item"
+                disabled={!(name && price && quantity)}
+              />
 
               <CancelButton to="/items" />
             </div>

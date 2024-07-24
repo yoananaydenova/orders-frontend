@@ -41,7 +41,7 @@ export const AddItemButton = ({ onClick, disabled }) => {
   );
 };
 
-export const CreateOrderButton = ({ name, onClick, disabled }) => {
+export const CreateButton = ({ name, onClick, disabled }) => {
   return (
     <SimpleButton
       name={name}
@@ -161,9 +161,13 @@ export const SaveButton = ({ onClick, disabled }) => {
   );
 };
 
-export const SubmitButton = ({ name }) => {
+export const SubmitButton = ({ name, disabled }) => {
   return (
-    <button type="submit" className="btn btn-outline-success">
+    <button
+      type="submit"
+      className="btn btn-outline-success"
+      disabled={disabled}
+    >
       <svg
         version="1.1"
         id="Layer_1"
