@@ -21,7 +21,7 @@ const Orders = () => {
   }, []);
 
   const loadOrders = async () => {
-    const result = await axios.get("http://localhost:8080/orders");
+    const result = await axios.get("http://localhost:8080/all-orders");
     setOrders(result.data);
   };
 
